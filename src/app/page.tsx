@@ -1,8 +1,8 @@
-import Image from "next/image";
+// import Image from "next/image";
 import styles from "./page.module.css";
 import Link from "next/link";
-import { type SanityDocument } from "next-sanity";
-import { client } from "@/sanity/client";
+// import { type SanityDocument } from "next-sanity";
+// import { client } from "@/sanity/client";
 
 export default function Home() {
   return (
@@ -10,10 +10,19 @@ export default function Home() {
       <main className={styles.main}>
         <ul>
           <li>
-            <Link href="/book">Bibliografi</Link>
+            <Link href="/no/article">Artikler</Link>
           </li>
           <li>
-            <Link href="/recording">Diskografi</Link>
+            <Link href="/no/book">Bibliografi</Link>
+          </li>
+          <li>
+            <Link href="/no/recording">Diskografi</Link>
+          </li>
+          <li>
+            <Link href="/no/sheetmusic">Noter</Link>
+          </li>
+          <li>
+            <Link href="/no/event">Arrangement</Link>
           </li>
         </ul>
 

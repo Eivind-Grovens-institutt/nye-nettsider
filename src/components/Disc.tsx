@@ -4,7 +4,7 @@ import type { SanityAsset, SanityImageSource } from "@sanity/image-url/lib/types
 import { client } from "@/sanity/client";
 const { projectId, dataset } = client.config();
 
-type DiscProps = {
+export type DiscProps = {
     title: string;
     musicians: string[];
     poster: SanityImageSource;
@@ -12,6 +12,7 @@ type DiscProps = {
     year: number;
     url: string;
     recording: SanityAsset;
+    _type: "recording";
 }
 const urlFor = (source: SanityImageSource) =>
   projectId && dataset

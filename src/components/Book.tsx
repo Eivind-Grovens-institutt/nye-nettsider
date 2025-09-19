@@ -4,7 +4,7 @@ import type { SanityAsset, SanityImageSource } from "@sanity/image-url/lib/types
 import { client } from "@/sanity/client";
 const { projectId, dataset } = client.config();
 
-type BookProps = {
+export type BookProps = {
     title: string;
     authors: string[];
     editors: string[];
@@ -13,6 +13,7 @@ type BookProps = {
     year: number;
     url: string;
     file: SanityAsset;
+    _type: "book";
 }
 const urlFor = (source: SanityImageSource) =>
   projectId && dataset
