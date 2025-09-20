@@ -23,7 +23,7 @@ const urlFor = (source: SanityImageSource) =>
     ? imageUrlBuilder({ projectId, dataset }).width(250).image(source)
     : null;
 
-export function Article({title, lead, illustration, prose, author, category, date}: ArticleProps) {
+export function Article({title, lead, illustration, prose, author, date}: ArticleProps) {
 return <div>
     <h1>{title}</h1>
     <img src={urlFor(illustration)?.url()} alt={title}></img>
@@ -37,7 +37,7 @@ return <div>
 {lead ? <div><b>{lead}</b></div> : null}
 {prose ? <PortableText value={prose} /> : null }
 
-    <p><small>Publisert: {date}, {category}</small></p>
+    <p><small>Publisert: {date}</small></p>
 </div>
 
 }

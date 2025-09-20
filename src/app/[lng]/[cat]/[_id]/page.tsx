@@ -7,7 +7,7 @@ import { Article, ArticleProps } from "@/components/Article";
 import { Event, EventProps } from "@/components/Event";
 import { Sheetmusic, SheetmusicProps } from "@/components/Sheetmusic";
 
-const POST_QUERY = `*[_type == $cat && language == $lng && _id == $_id][0]`;
+const POST_QUERY = `*[_type == $cat && language == $lng && _id == $_id][0] { ..., "author": author->name }`;
 
 const options = { next: { revalidate: 30 } };
 
@@ -17,7 +17,7 @@ export default async function PostPage({
   params: Promise<{ slug: string, lng: string, }>;
 }) {
   const post : BookProps | DiscProps | ArticleProps | EventProps | SheetmusicProps = await client.fetch<SanityDocument & BookProps | SanityDocument & DiscProps | SanityDocument & ArticleProps | SanityDocument & EventProps | SanityDocument & SheetmusicProps>(POST_QUERY, await params, options);
-
+console.log(JSON.stringify(post, null, 2))
   let content;
   switch(post._type) {
     case 'book':

@@ -22,7 +22,7 @@ export default function Home() {
             <Link href="/no/sheetmusic">Noter</Link>
           </li>
           <li>
-            <Link href="/no/event">Arrangement</Link>
+            <Link href="/no/event">Konserter / arrangement i Orgelhuset</Link>
           </li>
         </ul>
 
