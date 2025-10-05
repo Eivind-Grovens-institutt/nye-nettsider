@@ -16,7 +16,7 @@
 <style>
 	.textbox {
 		padding: 1rem;
-		background: #f7f7f7;
+		background: #757474;
 		border-radius: 4px;
 		font-size: 1rem;
 		line-height: 1.6;

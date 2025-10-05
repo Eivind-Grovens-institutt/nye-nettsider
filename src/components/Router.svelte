@@ -1,11 +1,20 @@
+<!--
+This component does the actual heavy lifting of selecting components
+for front page, listings and items
+-->
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import FrontPage from '../components/FrontPage.svelte';
 	import Article from '../components/Article.svelte';
 	import type { Settings } from '../lib/types';
 	import type { Article as ArticleType } from '../lib/types';
-	import { fetchArticleByLanguageAndSlug, fetchSettings } from '../lib/sanity-queries';
+	import {
+		fetchArticleByLanguageAndSlug,
+		fetchArticlesByCategory,
+		fetchSettings
+	} from '../lib/sanity-queries';
 	import Textbox from './Textbox.svelte';
+	import ArticleListing from './ArticleListing.svelte';
 
 	export let params: { path?: string };
 
@@ -14,20 +23,30 @@
 
 	let settings: Settings | null = null;
 	let article: ArticleType | null = null;
+	let articleList: ArticleType[] | null = null;
 
+	let showFrontPage: boolean = false;
 	onMount(async () => {
 		const pathParts = (params.path ?? '').split(/\//g);
-		console.log(pathParts);
+		const language = pathParts[0] || 'no';
+		settings = await fetchSettings(language);
+
 		try {
 			if (pathParts.length <= 1) {
 				// route = "/", route "/no"
-				const language = pathParts[0] || 'no';
-				settings = await fetchSettings(language);
+				showFrontPage = true;
 			} else {
 				// route = "/language/category/slug"
 				const slug = pathParts[2] || pathParts[pathParts.length - 1];
 				const language = pathParts[0];
-				article = await fetchArticleByLanguageAndSlug(language, slug);
+				const pageCategory = pathParts[1];
+				if (pageCategory === 'artikkel') {
+					article = await fetchArticleByLanguageAndSlug(language, slug);
+				}
+				if (pageCategory === 'artikler') {
+					const articleCategory = pathParts[2];
+					articleList = await fetchArticlesByCategory(articleCategory, language);
+				}
 			}
 		} catch (e) {
 			error = e instanceof Error ? e.message : String(e);
@@ -41,10 +60,12 @@
 	<p>Laster …</p>
 {:else if error}
 	<p>Feil: {error}</p>
-{:else if settings}
+{:else if showFrontPage && settings}
 	<FrontPage {settings} />
 {:else if article}
 	<Article {article} />
+{:else if articleList}
+	<ArticleListing articles={articleList} />
 {/if}
 
 {#if settings && settings.footer}

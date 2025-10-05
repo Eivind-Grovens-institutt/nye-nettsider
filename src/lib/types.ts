@@ -5,18 +5,37 @@ export interface Slug {
 	current: string;
 }
 
+export interface SanityPalette {
+	muted?: {
+		background?: string;
+		foreground?: string;
+		title?: string;
+	};
+}
+
+export interface SanityImageMetadata {
+	dimensions?: {
+		width?: number;
+		height?: number;
+		aspectRatio?: number;
+	};
+	lqip?: string;
+	palette?: SanityPalette;
+}
+
 export interface SanityImageAsset {
 	_id: string;
 	url: string;
-	metadata?: {
-		dimensions?: { width: number; height: number; aspectRatio: number };
-		lqip?: string;
-	};
+	metadata?: SanityImageMetadata;
 }
 
 export interface Illustration {
 	asset: SanityImageAsset;
 	alt?: string;
+}
+
+export interface SanityImage {
+	asset?: SanityImageAsset;
 }
 
 export interface Author {
@@ -67,6 +86,7 @@ export interface Article {
 	frontPageQuote?: string;
 	source?: string;
 	language?: string;
+	link?: string;
 }
 
 export interface CtaArticleBlock {
@@ -74,9 +94,10 @@ export interface CtaArticleBlock {
 	text?: string;
 	image?: EgiImageBlock;
 	article?: {
-		title?: string;
-		slug?: { current: string };
+		title: string;
+		slug: { current: string };
 	};
+	link?: string;
 }
 
 export interface TextboxBlock {
@@ -84,7 +105,15 @@ export interface TextboxBlock {
 	prose?: PortableTextBlock[];
 }
 
-export type FrontPageBlock = EgiImageBlock | CtaArticleBlock | TextboxBlock;
+export interface HeaderComponentData {
+	_id?: string;
+	_type?: 'header-component';
+	title?: string;
+	ctas?: CtaArticleBlock[];
+	image?: SanityImage;
+}
+
+export type FrontPageBlock = EgiImageBlock | CtaArticleBlock | TextboxBlock | HeaderComponentData;
 
 export interface Settings {
 	title: string;

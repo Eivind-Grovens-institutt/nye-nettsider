@@ -85,6 +85,8 @@
 		padding: 1.5rem;
 		font-family: Georgia, serif;
 		line-height: 1.6;
+		color: black;
+		text-shadow: none;
 	}
 
 	h1 {

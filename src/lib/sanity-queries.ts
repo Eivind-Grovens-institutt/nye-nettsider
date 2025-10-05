@@ -1,5 +1,5 @@
 // queries.ts
-import { proseFields, illustrationFields } from './fragments';
+import { proseFields, illustrationFields, ctaArticleFields } from './fragments';
 import type { Article } from './types';
 import { client } from './sanity-client';
 
@@ -52,7 +52,7 @@ export const fetchArticleSlugs = async (): Promise<{ slug: string }[]> => {
 };
 
 // Articles by category
-const articlesByCategoryQuery = `*[_type == "article" && category->title == $category && language == $language] | order(date desc){
+const articlesByCategoryQuery = `*[_type == "article" && lower(category->title) == lower($category) && language == $language] | order(date desc){
   title,
   lead,
   slug,
@@ -88,8 +88,15 @@ const settingsQuery = `*[_type == "settings" && language == $language ][0]{
       }
     },
     _type == "cta-article" => {
+      ${ctaArticleFields}
+    },
+    _type == "textbox" => {
       _type,
-      text,
+      prose
+    },
+    _type == "header-component" => {
+      _type,
+      title,
       image{
         _type,
         title,
@@ -99,23 +106,14 @@ const settingsQuery = `*[_type == "settings" && language == $language ][0]{
         asset->{
           _id,
           url,
-          metadata { dimensions, lqip }
+          metadata { dimensions, lqip,
+            palette {
+              muted{ background, title }
+            }
+          }
         }
       },
-      article->{
-        title,
-        lead,
-        ${illustrationFields},
-        ${proseFields},
-        author->{ name },
-        category->{ title },
-        slug,
-        language
-      }
-    },
-    _type == "textbox" => {
-      _type,
-      prose
+      ctas[]{ ${ctaArticleFields} }
     }
   }
 }`;

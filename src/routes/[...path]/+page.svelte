@@ -4,4 +4,6 @@
 	export let params;
 </script>
 
-<Router {params} />
+{#key params}
+	<Router {params} />
+{/key}

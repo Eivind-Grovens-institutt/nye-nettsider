@@ -5,11 +5,15 @@
 	import Modal from './Modal.svelte';
 
 	let props: {
+		textColor?: string;
+		bgColor?: string;
 		value: {
 			open: boolean;
 			image?: any;
 			text?: string;
-			article: ArticleType;
+			// either article or link must be set, both is also allowed
+			article?: ArticleType;
+			link?: string;
 		};
 	} = $props();
 	const value = props.value;
@@ -21,7 +25,7 @@
 	console.log(value);
 </script>
 
-<article class="cta">
+<article class="cta" style="--bg: {props.bgColor}; --color: {props.textColor}">
 	{#if value.image && value.image.asset}
 		<EgiImage value={value.image} />
 	{/if}
@@ -32,7 +36,9 @@
 
 	{#if open && value.article}
 		<Modal
-			linkHref={`/${value.article.language}/articles/${value.article.slug?.current}`}
+			linkHref={value.link
+				? value.link
+				: `/${value.article.language}/artikkel/${value.article.slug?.current}`}
 			linkText="Les mer"
 			onClose={toggle}
 		>
@@ -42,16 +48,13 @@
 </article>
 
 <style>
-	.cta {
-		border: 1px solid #ccc;
+	.cta-text {
 		padding: 1rem;
 		border-radius: 6px;
-	}
-
-	.cta-text {
-		margin: 1rem 0;
-		font-size: 1rem;
+		border: 1px solid #ccc;
+		font-size: 1.1rem;
 		border: none;
-		background: transparent;
+		color: var(--color);
+		background: var(--bg);
 	}
 </style>

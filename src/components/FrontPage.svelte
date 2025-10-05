@@ -2,6 +2,7 @@
 	import EgiImage from './EgiImage.svelte';
 	import CtaArticle from './CtaArticle.svelte';
 	import Textbox from './Textbox.svelte';
+	import HeaderComponent from './HeaderComponent.svelte';
 
 	export let settings: {
 		title: string;
@@ -20,15 +21,13 @@
 			} else {
 				blocks.push({ type: 'cta-group', items: [block] });
 			}
+		} else if (block._type === 'header-component') {
+			blocks.push(block);
 		}
 	});
 </script>
 
 <main class="frontpage">
-	<header class="site-title">
-		<h1>{settings.title}</h1>
-	</header>
-
 	<section class="blocks">
 		{#each blocks || [] as block}
 			{#if block._type === 'egi-image'}
@@ -41,6 +40,8 @@
 				</section>
 			{:else if block._type === 'textbox'}
 				<Textbox value={block} />
+			{:else if block._type === 'header-component'}
+				<HeaderComponent {...block} />
 			{/if}
 		{/each}
 	</section>
@@ -48,9 +49,8 @@
 
 <style>
 	.frontpage {
-		max-width: 960px;
 		margin: 0 auto;
-		padding: 2rem;
+		padding: 0;
 		font-family: Georgia, serif;
 	}
 
