@@ -54,8 +54,6 @@
 
 		<div class="meta">
 			{#if article.date}<time datetime={article.date}>{formatDate(article.date)}</time>{/if}
-			{#if article.author}
-				• Av <b>{article.author.name}</b>{/if}
 			{#if article.category}
 				• Tema <b>{article.category.title}</b>{/if}
 		</div>
@@ -76,6 +74,8 @@
 			<p>Kilde: {article.source}</p>
 		</footer>
 	{/if}
+	{#if article.author}
+		<p>• Av <b>{article.author.name}</b></p>{/if}
 </article>
 
 <style>
