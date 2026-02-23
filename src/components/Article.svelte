@@ -1,22 +1,27 @@
 <script lang="ts">
+	// TODO: does this handle tables?
 	import { PortableText } from '@portabletext/svelte';
 	import { portableTextComponents } from './portableTextComponents';
 	import type { PortableTextBlock } from '@portabletext/types';
 
-	export let article: {
-		title: string;
-		lead?: string;
-		illustration?: any;
-		prose?: PortableTextBlock[];
-		author?: { name: string };
-		category?: { title: string };
-		metaDescription?: string;
-		slug?: { current: string };
-		date?: string;
-		frontPageQuote?: string;
-		source?: string;
-		language?: string;
-	};
+	interface Props {
+		article: {
+			title: string;
+			lead?: string;
+			illustration?: any;
+			prose?: PortableTextBlock[];
+			author?: { name: string };
+			category?: { title: string };
+			metaDescription?: string;
+			slug?: { current: string };
+			date?: string;
+			frontPageQuote?: string;
+			source?: string;
+			language?: string;
+		};
+	}
+
+	const { article } = $props();
 
 	// Date formatting utility
 	const formatDate = (date?: string) => {
@@ -34,11 +39,24 @@
 
 	const builder = imageUrlBuilder(client);
 	const urlFor = (source) => builder.image(source).width(1200).url();
+	let endnotes = $derived(
+		article.prose?.reduce((notes, curBlock) => {
+			if (curBlock._type !== 'block' || !curBlock.markDefs?.length) {
+				return notes;
+			}
+			return [...notes, ...curBlock.markDefs.filter((def) => def._type === 'endnote')];
+		}, [])
+	);
 </script>
 
+<svelte:head>
+	<title>{article.title} - eivindgroven.org</title>
+</svelte:head>
 <article class="article">
 	<header>
 		<h1>{article.title}</h1>
+		{#if article.author}
+			<p>• Av <b>{article.author.name}</b></p>{/if}
 
 		{#if article.lead}
 			<p class="lead">{article.lead}</p>
@@ -60,13 +78,11 @@
 	</header>
 
 	{#if article.prose}
-		<PortableText value={article.prose} components={portableTextComponents} />
-	{/if}
-
-	{#if article.frontPageQuote}
-		<blockquote class="front-quote">
-			{article.frontPageQuote}
-		</blockquote>
+		<PortableText
+			value={article.prose}
+			components={portableTextComponents}
+			context={{ endnotes }}
+		/>
 	{/if}
 
 	{#if article.source}
@@ -74,8 +90,18 @@
 			<p>Kilde: {article.source}</p>
 		</footer>
 	{/if}
-	{#if article.author}
-		<p>• Av <b>{article.author.name}</b></p>{/if}
+
+	{#if endnotes?.length}
+		<hr />
+		<ol>
+			{#each endnotes as note}
+				<li id="note-{note._key}" class="endnote">
+					<PortableText value={note.note} components={portableTextComponents} />
+					<a href="#src-{note._key}">↩</a>
+				</li>
+			{/each}
+		</ol>
+	{/if}
 </article>
 
 <style>
@@ -125,5 +151,9 @@
 		font-size: 0.85rem;
 		color: #666;
 		margin-top: 2rem;
+	}
+
+	.endnote {
+		font-size: small;
 	}
 </style>

@@ -42,7 +42,7 @@
 			linkText="Les mer"
 			onClose={toggle}
 		>
-			<Article article={value.article} />
+			<Article article={{ ...value.article, author: undefined }} />
 		</Modal>
 	{/if}
 </article>
