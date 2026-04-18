@@ -1,26 +1,25 @@
 <script lang="ts">
 	import imageUrlBuilder from '@sanity/image-url';
+	import type { CustomBlockComponentProps } from '@portabletext/svelte';
 
-	export let value: {
-		asset: any;
-		title?: string;
-		photographer?: string;
-		persons?: string[];
-		tags?: string[];
-	};
+	interface Props {
+		portableText: CustomBlockComponentProps<{ size?: string }>;
+	}
+	let { portableText }: Props = $props();
+	const value = portableText.value;
+	console.log(portableText);
 
 	import { client } from '../lib/sanity-client';
 	const builder = imageUrlBuilder(client);
 	const urlFor = (source) => builder.image(source).url();
 </script>
 
-<figure class="egi-image">
+<figure class={value.size === 'half' ? 'egi-image half' : 'egi-image full'}>
 	<img src={urlFor(value)} alt={value.title || ''} />
-	{#if value.title || value.photographer || value.persons?.length}
+	{#if value.title || value.photographer}
 		<figcaption>
 			{#if value.title}<div>{value.title}</div>{/if}
 			{#if value.photographer}<div>Foto: {value.photographer}</div>{/if}
-			{#if value.persons?.length}<div>Personer: {value.persons.join(', ')}</div>{/if}
 		</figcaption>
 	{/if}
 </figure>
@@ -28,6 +27,10 @@
 <style>
 	.egi-image {
 		margin: 1.5rem 0;
+	}
+	.egi-image.half {
+		width: 50%;
+		float: right;
 	}
 	.egi-image img {
 		width: 100%;
