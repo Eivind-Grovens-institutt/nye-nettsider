@@ -71,7 +71,7 @@ export interface PullquoteBlock {
 	quoteeDesc?: string;
 }
 
-export type ProseBlock = any | EgiImageBlock | VideoBlock | PullquoteBlock;
+export type ProseBlock = PortableTextBlock | EgiImageBlock | VideoBlock | PullquoteBlock;
 
 export interface Article {
 	title: string;
@@ -120,4 +120,13 @@ export interface Settings {
 	frontPageBlocks?: FrontPageBlock[];
 	footer: TextboxBlock;
 	language: string;
+	menu: Array<{
+		url: string;
+		text: string;
+		_key: string;
+		article: {
+			language: string;
+			slug: string;
+		};
+	}>;
 }

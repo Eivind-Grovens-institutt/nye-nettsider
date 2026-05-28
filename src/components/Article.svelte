@@ -55,8 +55,6 @@
 <article class="article">
 	<header>
 		<h1>{article.title}</h1>
-		{#if article.author}
-			<p>• Av <b>{article.author.name}</b></p>{/if}
 
 		{#if article.lead}
 			<p class="lead">{article.lead}</p>
@@ -69,20 +67,16 @@
 				class="illustration"
 			/>
 		{/if}
-
-		<div class="meta">
-			{#if article.date}<time datetime={article.date}>{formatDate(article.date)}</time>{/if}
-			{#if article.category}
-				• Tema <b>{article.category.title}</b>{/if}
-		</div>
 	</header>
 
 	{#if article.prose}
-		<PortableText
-			value={article.prose}
-			components={portableTextComponents}
-			context={{ endnotes }}
-		/>
+		<main>
+			<PortableText
+				value={article.prose}
+				components={portableTextComponents}
+				context={{ endnotes }}
+			/>
+		</main>
 	{/if}
 
 	{#if article.source}
@@ -90,12 +84,19 @@
 			<p>Kilde: {article.source}</p>
 		</footer>
 	{/if}
+	<div class="meta">
+		{#if article.author}
+			• Av <b>{article.author.name}</b>{/if}
+		{#if article.date}<time datetime={article.date}>{formatDate(article.date)}</time>{/if}
+		{#if article.category}
+			• Tema <b>{article.category.title}</b>{/if}
+	</div>
 
 	{#if endnotes?.length}
 		<hr />
 		<ol>
 			{#each endnotes as note}
-				<li id="note-{note._key}" class="endnote">
+				<li id="note-{note._key}" key={note._key} class="endnote">
 					<PortableText value={note.note} components={portableTextComponents} />
 					<a href="#src-{note._key}">↩</a>
 				</li>
@@ -128,10 +129,11 @@
 	}
 
 	.illustration {
-		width: 100%;
+		width: 50%;
 		height: auto;
-		margin: 1rem 0;
+		margin: 2rem;
 		border-radius: 8px;
+		float: right;
 	}
 
 	.meta {
@@ -151,6 +153,10 @@
 		font-size: 0.85rem;
 		color: #666;
 		margin-top: 2rem;
+	}
+
+	main {
+		text-align: justify;
 	}
 
 	.endnote {

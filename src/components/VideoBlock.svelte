@@ -1,18 +1,38 @@
 <script lang="ts">
-	export let value: {
-		title?: string;
-		url: string;
-		poster?: any;
+	import type { PortableTextBlock } from '@portabletext/types';
+	import EgiImage from './EgiImage.svelte';
+	import type { CustomBlockComponentProps } from '@portabletext/svelte';
+
+	type VideoBlock = {
+		_key: string;
+		_ref: string;
+		_type: 'video';
+		title: string;
+		text: PortableTextBlock;
+		videoUrl: string;
+		year: number | null;
+		image: EgiImage | null;
+		markDefs: unknown[] | null;
 	};
+
+	interface Props {
+		portableText: CustomBlockComponentProps<{
+			value?: VideoBlock;
+		}>;
+	}
+
+	const { portableText }: Props = $props();
+	console.log('video', portableText);
+	const value = portableText.value;
 </script>
 
 <div class="video-block">
-	<video controls {poster} src={value.url}>
-		Sorry, your browser does not support embedded videos.
-	</video>
 	{#if value.title}
 		<p class="caption">{value.title}</p>
 	{/if}
+	<video controls poster={value.image?.asset?.url} src={value.videoUrl}>
+		Sorry, your browser does not support embedded videos.
+	</video>
 </div>
 
 <style>
@@ -21,12 +41,10 @@
 	}
 	.video-block video {
 		width: 100%;
-		height: auto;
 		border-radius: 6px;
 	}
 	.caption {
-		font-size: 0.85rem;
-		color: #555;
+		font-size: 1.85rem;
 		margin-top: 0.5rem;
 	}
 </style>

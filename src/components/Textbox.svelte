@@ -16,9 +16,16 @@
 <style>
 	.textbox {
 		padding: 1rem;
-		background: #757474;
+		background-color: #185fa5;
+		color: #fff;
 		border-radius: 4px;
 		font-size: 1rem;
 		line-height: 1.6;
+	}
+	.textbox :global(a:link) {
+		color: #fff;
+	}
+	.textbox :global(a:visited) {
+		color: #ffc;
 	}
 </style>

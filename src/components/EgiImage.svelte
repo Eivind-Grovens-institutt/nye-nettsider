@@ -1,9 +1,25 @@
 <script lang="ts">
+	export interface EgiImage {
+		asset?: { url?: string };
+		alt?: string;
+		hotspot?: { x: number; y: number; width: number; height: number };
+		crop?: { top: number; bottom: number; left: number; right: number };
+		title?: string;
+		photographer?: string;
+		persons?: string[];
+		tags?: string[];
+		size?: string;
+	}
+
 	import imageUrlBuilder from '@sanity/image-url';
 	import type { CustomBlockComponentProps } from '@portabletext/svelte';
 
 	interface Props {
-		portableText: CustomBlockComponentProps<{ size?: string }>;
+		portableText: CustomBlockComponentProps<{
+			size?: string;
+			title: string;
+			photographer?: string;
+		}>;
 	}
 	let { portableText }: Props = $props();
 	const value = portableText.value;

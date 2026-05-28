@@ -40,7 +40,7 @@
 			{#if headerRow}
 				<thead>
 					<tr>
-						{#each headerRow.cells as cell, i}
+						{#each headerRow.cells as cell, i (cell._key)}
 							<th scope={isBiDirectional && i === 0 ? undefined : 'col'} class:empty={cell === ''}
 								>{cell}</th
 							>

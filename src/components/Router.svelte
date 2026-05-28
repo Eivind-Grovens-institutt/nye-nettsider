@@ -8,28 +8,22 @@ for front page, listings and items
 	import Article from '../components/Article.svelte';
 	import type { Settings } from '../lib/types';
 	import type { Article as ArticleType } from '../lib/types';
-	import {
-		fetchArticleByLanguageAndSlug,
-		fetchArticlesByCategory,
-		fetchSettings
-	} from '../lib/sanity-queries';
+	import { fetchArticleByLanguageAndSlug, fetchSettings } from '../lib/sanity-queries';
 	import Textbox from './Textbox.svelte';
-	import ArticleListing from './ArticleListing.svelte';
 
 	export let params: { path?: string };
+	export let settings: Settings | null = null;
 
 	let loading = true;
 	let error: string | null = null;
 
-	let settings: Settings | null = null;
 	let article: ArticleType | null = null;
-	let articleList: ArticleType[] | null = null;
 
 	let showFrontPage: boolean = false;
 	onMount(async () => {
 		const pathParts = (params.path ?? '').split(/\//g);
 		const language = pathParts[0] || 'no';
-		settings = await fetchSettings(language);
+		settings = settings || (await fetchSettings(language));
 
 		try {
 			if (pathParts.length <= 1) {
@@ -40,12 +34,8 @@ for front page, listings and items
 				const slug = pathParts[2] || pathParts[pathParts.length - 1];
 				const language = pathParts[0];
 				const pageCategory = pathParts[1];
-				if (pageCategory === 'artikkel') {
+				if (pageCategory === 'artikkel' || pageCategory === 'intro') {
 					article = await fetchArticleByLanguageAndSlug(language, slug);
-				}
-				if (pageCategory === 'artikler') {
-					const articleCategory = pathParts[2];
-					articleList = await fetchArticlesByCategory(articleCategory, language);
 				}
 			}
 		} catch (e) {
@@ -56,19 +46,15 @@ for front page, listings and items
 	});
 </script>
 
-{#if loading}
-	<p>Laster …</p>
-{:else if error}
+{#if error}
 	<p>Feil: {error}</p>
 {:else if showFrontPage && settings}
 	<FrontPage {settings} />
 {:else if article}
 	<Article {article} />
-{:else if articleList}
-	<ArticleListing articles={articleList} />
 {/if}
 
-{#if settings && settings.footer}
+{#if settings && settings.footer && !loading}
 	<footer>
 		<Textbox value={settings.footer} />
 	</footer>
@@ -77,5 +63,6 @@ for front page, listings and items
 <style>
 	footer {
 		font-size: smaller;
+		clear: both;
 	}
 </style>

@@ -71,6 +71,15 @@ export const fetchArticlesByCategory = async (
 
 const settingsQuery = `*[_type == "settings" && language == $language ][0]{
   title,
+  menu[] {
+    _key,
+    text,
+    url,
+    article-> {
+      language,
+      "slug": slug.current
+    }
+  },
   footer,
   language,
   frontPageBlocks[]{
