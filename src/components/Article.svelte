@@ -156,7 +156,7 @@
 	}
 
 	main {
-		text-align: justify;
+		text-align: left;
 	}
 
 	.endnote {
