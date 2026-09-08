@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { Article as ArticleType } from '../lib/types';
-	import Modal from './Modal.svelte';
 
 	let props: {
 		textColor?: string;

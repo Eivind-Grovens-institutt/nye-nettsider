@@ -1,50 +1,32 @@
 <script lang="ts">
-	import { PortableText, type CustomBlockComponentProps } from '@portabletext/svelte';
-	import type { PortableTextBlock } from '@portabletext/types';
+	import { PortableText } from '@portabletext/svelte';
 	import EgiImage from './EgiImage.svelte';
-
-	type SheetMusicBlock = {
-		_key: string;
-		_ref: string;
-		_type: 'recording';
-		title: string;
-		year: string | null;
-		text: PortableTextBlock[];
-		instruments: string[];
-		markDefs: unknown[] | null;
-		image: EgiImage;
-		noteUrl: string | null;
-	};
+	import type { Sheetmusic } from '$lib/types';
+	import { resolve } from '$app/paths';
 
 	interface Props {
-		portableText: CustomBlockComponentProps<{
-			value?: SheetMusicBlock;
-		}>;
+		sheetmusic: Sheetmusic;
 	}
 
-	const { portableText }: Props = $props();
-	const value = portableText.value;
+	const { sheetmusic }: Props = $props();
 </script>
 
 <div class="recording-block">
-	{#if value?.title}
-		<p class="caption">{value.title}</p>
+	{#if sheetmusic?.title}
+		<p class="caption">{sheetmusic.title}</p>
 	{/if}
-	{#if value?.image}
+	{#if sheetmusic?.image}
 		<EgiImage
 			portableText={{
-				value: { ...value.image, size: 'half' },
-				isInline: portableText.isInline,
-				indexInParent: portableText.indexInParent,
-				global: portableText.global
+				value: { ...sheetmusic.image, size: 'half' }
 			}}
 		></EgiImage>
 	{/if}
-	{#if value?.text}
-		<PortableText value={value.text} />
+	{#if sheetmusic?.text}
+		<PortableText value={sheetmusic.text} />
 	{/if}
-	{#if value?.noteUrl}<p>
-			<a href={value.noteUrl}>Vis noter</a>
+	{#if sheetmusic?.noteUrl}<p>
+			<a href={resolve(sheetmusic.noteUrl)}>Vis noter</a>
 		</p>{/if}
 </div>
 <br />

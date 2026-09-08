@@ -71,7 +71,12 @@ export interface PullquoteBlock {
 	quoteeDesc?: string;
 }
 
-export type ProseBlock = PortableTextBlock | EgiImageBlock | VideoBlock | PullquoteBlock;
+export type ProseBlock =
+	| PortableTextBlock
+	| EgiImageBlock
+	| VideoBlock
+	| PullquoteBlock
+	| ContentListBlock;
 
 export interface Article {
 	title: string;
@@ -129,4 +134,113 @@ export interface Settings {
 			slug: string;
 		};
 	}>;
+}
+
+export interface EventDate {
+	starttime?: string;
+	endtime?: string;
+}
+
+export interface Track {
+	_id: string;
+	title: string;
+	soundUrl?: string;
+}
+
+export interface Book {
+	_id: string;
+	title: string;
+	authors?: string[];
+	editors?: string[];
+	text?: PortableTextBlock[];
+	image?: SanityImage;
+	year?: number;
+	url?: string;
+	assetUrl?: string;
+	tags?: string[];
+	language?: string;
+}
+
+export interface Recording {
+	_id: string;
+	title: string;
+	musicians?: string[];
+	text?: PortableTextBlock[];
+	image?: SanityImage;
+	year?: number;
+	url?: string;
+	tracks?: Track[];
+	tags?: string[];
+	language?: string;
+}
+
+export interface Sheetmusic {
+	_id: string;
+	title: string;
+	instruments?: string[];
+	text?: PortableTextBlock[];
+	image?: SanityImage;
+	year?: number;
+	url?: string;
+	noteUrl?: string;
+	tags?: string[];
+	language?: string;
+}
+
+export interface Video {
+	_id: string;
+	title: string;
+	internalDescription?: string;
+	editors?: string[];
+	text?: PortableTextBlock[];
+	image?: SanityImage;
+	year?: number;
+	url?: string;
+	videoUrl?: string;
+	tags?: string[];
+	language?: string;
+}
+
+export interface Event {
+	_id: string;
+	title: string;
+	dates?: EventDate[];
+	illustration?: Illustration;
+	prose?: ProseBlock[];
+	ticketlink?: string;
+	tags?: string[];
+	language?: string;
+}
+
+export type ContentListType = 'video' | 'recording' | 'sound' | 'book' | 'sheetmusic';
+
+export interface ContentListBlock {
+	_type: 'content-list';
+	_key?: string;
+	contentType?: ContentListType[];
+	tag?: string;
+}
+
+export interface ContentListItem {
+	_id: string;
+	_type: ContentListType;
+	title: string;
+	image?: SanityImage;
+	year?: number;
+	language?: string;
+	authors?: string[];
+	musicians?: string[];
+	instruments?: string[];
+	editors?: string[];
+}
+
+export interface Sound {
+	_id: string;
+	title: string;
+	text?: PortableTextBlock[];
+	year?: number;
+	url?: string;
+	soundUrl?: string;
+	tags?: string[];
+	language?: string;
 }

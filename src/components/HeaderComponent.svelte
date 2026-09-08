@@ -5,17 +5,15 @@
 
 	// Props received from parent
 	export let title: string;
+	export let language: string;
 	export let ctas: CtaArticleBlock[] = [];
 	export let image: SanityImage;
-	export let imageHeight: number = Math.min(
-		image.asset?.metadata?.dimensions?.height || 400,
-		window.innerHeight * 1.3
-	);
+	export let imageHeight: number = Math.min(image.asset?.metadata?.dimensions?.height ?? 400, 400);
 	const bgColor = '#111'; //image.asset?.metadata?.palette?.muted?.background;
 	const titleColor = image.asset?.metadata?.palette?.muted?.title;
-	console.log({ bgColor, titleColor, image, imageHeight, innerHeight: window.innerHeight });
 	import imageUrlBuilder from '@sanity/image-url';
 	import { client } from '../lib/sanity-client';
+	import EventList from './EventList.svelte';
 
 	const builder = imageUrlBuilder(client);
 	const urlFor = (source) => builder.image(source).url();
@@ -24,14 +22,14 @@
 <section class="header-wrapper" style="--bg: {bgColor}; --title: {titleColor}">
 	<div
 		class="background-image"
-		style="background-image: url('{urlFor(image)}'); --height: {imageHeight}px;"
+		style="background-image: url('{urlFor(image)}'); --height: min({imageHeight}px, 130vh);"
 	>
 		<!-- Top: Title -->
 		{#if title}
 			<h1>{title}</h1>
 		{/if}
-
 		<!-- Bottom: CTAs -->
+		<EventList {language} />
 		{#if ctas?.length}
 			<div class="ctas">
 				{#each ctas as cta}

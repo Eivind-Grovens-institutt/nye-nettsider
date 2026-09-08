@@ -66,14 +66,6 @@ export const proseFields = `
       text,
       year,
       "soundUrl": recording.asset->url,
-      image {
-        ...,
-        asset->{
-          _id,
-          url,
-          metadata { dimensions, lqip }
-        }
-      }
     },
     // noter
     _type == "sheetmusic" =>  @-> {

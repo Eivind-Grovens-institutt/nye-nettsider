@@ -74,7 +74,7 @@
 			<PortableText
 				value={article.prose}
 				components={portableTextComponents}
-				context={{ endnotes }}
+				context={{ endnotes, language: article.language }}
 			/>
 		</main>
 	{/if}

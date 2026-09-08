@@ -1,52 +1,31 @@
 <script lang="ts">
-	import { PortableText, type CustomBlockComponentProps } from '@portabletext/svelte';
-	import type { PortableTextBlock } from '@portabletext/types';
+	import { PortableText } from '@portabletext/svelte';
 	import EgiImage from './EgiImage.svelte';
-
-	type BookBlock = {
-		_key: string;
-		_ref: string;
-		_type: 'recording';
-		title: string;
-		authors: string[];
-		editors: string[];
-		year: string | null;
-		text: PortableTextBlock[];
-		markDefs: unknown[] | null;
-		image: EgiImage;
-		assetUrl?: string;
-	};
+	import type { Book } from '$lib/types';
 
 	interface Props {
-		portableText: CustomBlockComponentProps<{
-			value?: BookBlock;
-		}>;
+		book: Book;
 	}
 
-	const { portableText }: Props = $props();
-	console.log('book', portableText);
-	const value = portableText.value;
+	const { book }: Props = $props();
 </script>
 
 <div class="recording-block">
-	{#if value?.title}
-		<p class="caption">{value.title}</p>
+	{#if book?.title}
+		<p class="caption">{book.title}</p>
 	{/if}
-	{#if value?.image?.asset}
+	{#if book?.image?.asset}
 		<EgiImage
 			portableText={{
-				value: { ...value.image, size: 'half' },
-				isInline: portableText.isInline,
-				indexInParent: portableText.indexInParent,
-				global: portableText.global
+				value: { ...book.image, size: 'half' }
 			}}
 		></EgiImage>
 	{/if}
-	{#if value?.text}
-		<PortableText value={value.text} />
+	{#if book?.text}
+		<PortableText value={book.text} />
 	{/if}
-	{#if value?.assetUrl}<p>
-			<a href={value.assetUrl}>Full tekst</a>
+	{#if book?.assetUrl}<p>
+			<a href={book.assetUrl}>Full tekst</a>
 		</p>{/if}
 </div>
 <br />

@@ -6,6 +6,7 @@
 
 	export let settings: {
 		title: string;
+		language: string;
 		frontPageBlocks?: any[];
 	};
 
@@ -34,17 +35,17 @@
 	<section class="blocks">
 		{#each blocks || [] as block}
 			{#if block._type === 'egi-image'}
-				<EgiImage value={block} />
+				<EgiImage value={block} key={block._key} />
 			{:else if block.type === 'cta-group'}
-				<section class="ctas ctas-{block.items.length}">
+				<section class="ctas ctas-{block.items.length}" key="ctas">
 					{#each block.items as item}
-						<CtaArticle value={item} />
+						<CtaArticle value={item} key={item._key} />
 					{/each}
 				</section>
 			{:else if block._type === 'textbox'}
-				<Textbox value={block} />
+				<Textbox value={block} key={block._key} />
 			{:else if block._type === 'header-component'}
-				<HeaderComponent {...block} />
+				<HeaderComponent {...block} language={settings?.language} key="header" />
 			{/if}
 		{/each}
 	</section>

@@ -1,36 +1,18 @@
 <script lang="ts">
-	import type { PortableTextBlock } from '@portabletext/types';
-	import EgiImage from './EgiImage.svelte';
-	import type { CustomBlockComponentProps } from '@portabletext/svelte';
-
-	type VideoBlock = {
-		_key: string;
-		_ref: string;
-		_type: 'video';
-		title: string;
-		text: PortableTextBlock;
-		videoUrl: string;
-		year: number | null;
-		image: EgiImage | null;
-		markDefs: unknown[] | null;
-	};
+	import type { Video } from '$lib/types';
 
 	interface Props {
-		portableText: CustomBlockComponentProps<{
-			value?: VideoBlock;
-		}>;
+		video: Video;
 	}
-
-	const { portableText }: Props = $props();
-	console.log('video', portableText);
-	const value = portableText.value;
+	const { video }: Props = $props();
+	console.log({ video });
 </script>
 
 <div class="video-block">
-	{#if value.title}
-		<p class="caption">{value.title}</p>
+	{#if video.title}
+		<p class="caption">{video.title}</p>
 	{/if}
-	<video controls poster={value.image?.asset?.url} src={value.videoUrl}>
+	<video controls poster={video.image?.asset?.url} src={video.videoUrl}>
 		Sorry, your browser does not support embedded videos.
 	</video>
 </div>

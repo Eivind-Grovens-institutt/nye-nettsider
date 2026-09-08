@@ -1,47 +1,39 @@
 <script lang="ts">
-	import { PortableText, type CustomBlockComponentProps } from '@portabletext/svelte';
-	import type { PortableTextBlock } from '@portabletext/types';
+	import { PortableText } from '@portabletext/svelte';
 	import EgiImage from './EgiImage.svelte';
-
-	type RecordingBlock = {
-		_key: string;
-		_ref: string;
-		_type: 'recording';
-		title: string;
-		musicians: string[];
-		year: string | null;
-		text: PortableTextBlock[];
-		markDefs: unknown[] | null;
-		image: EgiImage;
-	};
+	import SoundPlayerBlock from './SoundPlayerBlock.svelte';
+	import type { Recording } from '$lib/types';
 
 	interface Props {
-		portableText: CustomBlockComponentProps<{
-			value?: RecordingBlock;
-		}>;
+		recording: Recording;
 	}
 
-	const { portableText }: Props = $props();
-	console.log('recording', portableText);
-	const value = portableText.value;
+	const { recording }: Props = $props();
+	console.log({ recording });
 </script>
 
 <div class="recording-block">
-	{#if value?.title}
-		<p class="caption">{value.title}</p>
+	{#if recording?.title}
+		<p class="caption">{recording.title}</p>
 	{/if}
-	{#if value?.image}
+	{#if recording?.image}
 		<EgiImage
 			portableText={{
-				value: { ...value.image, size: 'half' },
-				isInline: portableText.isInline,
-				indexInParent: portableText.indexInParent,
-				global: portableText.global
+				value: { ...recording.image, size: recording?.text ? 'half' : 'full' }
 			}}
 		></EgiImage>
 	{/if}
-	{#if value?.text}
-		<PortableText value={value.text} />
+	{#if recording?.text}
+		<PortableText value={recording.text} />
+	{/if}
+	<br />
+	{#if recording?.tracks?.length}
+		<div class="tracks">
+			<h4 class="tracks-title">Spor</h4>
+			{#each recording.tracks as track (track._id)}
+				<SoundPlayerBlock sound={track} />
+			{/each}
+		</div>
 	{/if}
 </div>
 <br />
@@ -53,6 +45,11 @@
 	.caption {
 		font-size: 1.85rem;
 		margin-top: 0.5rem;
+	}
+	.tracks-title {
+		font-size: 1.1rem;
+		margin-top: 1.5rem;
+		margin-bottom: 0.5rem;
 	}
 	br {
 		clear: both;

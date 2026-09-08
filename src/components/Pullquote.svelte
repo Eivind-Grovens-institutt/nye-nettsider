@@ -1,19 +1,24 @@
 <script lang="ts">
-	export let value: {
-		contents: string;
-		quotee?: string;
-		quoteeDesc?: string;
-	};
+	import type { PullquoteBlock } from '$lib/types';
+	import type { CustomBlockComponentProps } from '@portabletext/svelte';
+
+	interface Props {
+		portableText: CustomBlockComponentProps<{ value?: PullquoteBlock }>;
+	}
+	const { portableText }: Props = $props();
+	const { value } = portableText;
 </script>
 
-<blockquote class="pullquote">
-	<p class="contents">“{value.contents}”</p>
-	{#if value.quotee}
-		<footer>
-			— {value.quotee}{#if value.quoteeDesc}, <span>{value.quoteeDesc}</span>{/if}
-		</footer>
-	{/if}
-</blockquote>
+{#if value}
+	<blockquote class="pullquote">
+		<p class="contents">“{value.contents}”</p>
+		{#if value.quotee}
+			<footer>
+				— {value.quotee}{#if value.quoteeDesc}, <span>{value.quoteeDesc}</span>{/if}
+			</footer>
+		{/if}
+	</blockquote>
+{/if}
 
 <style>
 	.pullquote {

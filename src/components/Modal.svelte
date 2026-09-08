@@ -1,5 +1,13 @@
 <script lang="ts">
-	let { children, onClose, linkHref, linkText } = $props();
+	import type { Snippet } from 'svelte';
+
+	interface Props {
+		children: Snippet;
+		onClose: () => void;
+		linkHref?: string;
+		linkText?: string;
+	}
+	let { children, onClose, linkHref, linkText }: Props = $props();
 
 	const handleClose = () => {
 		if (onClose) onClose();
@@ -20,7 +28,7 @@
 	>
 		<button class="close-btn" onclick={handleClose} aria-label="Close">&times;</button>
 		{@render children()}
-		<a class="modal-link" href={linkHref}>{linkText}</a>
+		{#if linkText}<a class="modal-link" href={linkHref}>{linkText}</a>{/if}
 	</div>
 </div>
 
