@@ -43,6 +43,8 @@
 						</span>
 						<span class="date-cell">{formatDate(event.dates?.[0]?.starttime)}</span>
 					</a>
+					{#if event.ticketlink}
+						<a href={event.ticketlink}>Billetter</a>{/if}
 				</li>
 			{/each}
 		</ol>
