@@ -2,7 +2,6 @@
 	import { PortableText } from '@portabletext/svelte';
 	import EgiImage from './EgiImage.svelte';
 	import type { Sheetmusic } from '$lib/types';
-	import { resolve } from '$app/paths';
 
 	interface Props {
 		sheetmusic: Sheetmusic;
@@ -26,7 +25,7 @@
 		<PortableText value={sheetmusic.text} />
 	{/if}
 	{#if sheetmusic?.noteUrl}<p>
-			<a href={resolve(sheetmusic.noteUrl)}>Vis noter</a>
+			<a href={sheetmusic.noteUrl}>Vis noter</a>
 		</p>{/if}
 </div>
 <br />
