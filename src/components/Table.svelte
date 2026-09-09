@@ -31,7 +31,6 @@
 	const isBiDirectional = $derived(
 		firstRowIsHeader && firstColumnIsHeader && headerRow != null && headerRow.cells[0] === ''
 	);
-	console.log(value);
 </script>
 
 {#if hasRows}

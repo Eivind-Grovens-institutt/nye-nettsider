@@ -47,6 +47,7 @@
 		"@portabletext/svelte": "^4.0.0",
 		"@portabletext/types": "^2.0.15",
 		"@sanity/client": "^7.11.2",
-		"@sanity/image-url": "^1.2.0"
+		"@sanity/image-url": "^1.2.0",
+		"groq": "^6.13.0"
 	}
 }

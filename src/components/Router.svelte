@@ -86,15 +86,15 @@ for front page, listings and items
 {:else if article}
 	<Article {article} />
 {:else if video}
-	<VideoBlock {video} />
+	<section class="content"><VideoBlock {video} /></section>
 {:else if recording}
-	<RecordingBlock {recording} />
+	<section class="content"><RecordingBlock {recording} /></section>
 {:else if sound}
-	<SoundPlayerBlock {sound} />
+	<section class="content"><SoundPlayerBlock {sound} /></section>
 {:else if book}
-	<BookBlock {book} />
+	<section class="content"><BookBlock {book} /></section>
 {:else if sheetmusic}
-	<SheetMusicBlock {sheetmusic} />
+	<section class="content"><SheetMusicBlock {sheetmusic} /></section>
 {:else if event}
 	<section class="content"><EventBlock {event} /></section>
 {/if}
@@ -114,5 +114,11 @@ for front page, listings and items
 	.content {
 		max-width: 720px;
 		margin: 0 auto;
+	}
+	@media (max-width: 600px) {
+		.content {
+			max-width: none;
+			margin: 0 auto;
+		}
 	}
 </style>

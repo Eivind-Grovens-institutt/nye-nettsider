@@ -20,6 +20,9 @@ importers:
       '@sanity/image-url':
         specifier: ^1.2.0
         version: 1.2.0
+      groq:
+        specifier: ^6.13.0
+        version: 6.13.0
     devDependencies:
       '@eslint/compat':
         specifier: ^1.2.5
@@ -1009,6 +1012,10 @@ packages:
 
   graphemer@1.4.0:
     resolution: {integrity: sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==}
+
+  groq@6.13.0:
+    resolution: {integrity: sha512-OldrkHmesa0yc6lWh0hry8VKhXcNpfPyxj0YWR9mn8z93E5xrlz9julX7YLTPc+PNnnLEf+70shxIbO6Jq7tBg==}
+    engines: {node: '>=22.12'}
 
   has-flag@4.0.0:
     resolution: {integrity: sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==}
@@ -2426,6 +2433,8 @@ snapshots:
   globals@16.4.0: {}
 
   graphemer@1.4.0: {}
+
+  groq@6.13.0: {}
 
   has-flag@4.0.0: {}
 

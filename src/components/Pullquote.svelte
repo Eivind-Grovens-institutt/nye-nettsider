@@ -6,7 +6,7 @@
 		portableText: CustomBlockComponentProps<{ value?: PullquoteBlock }>;
 	}
 	const { portableText }: Props = $props();
-	const { value } = portableText;
+	const value = $derived(portableText.value);
 </script>
 
 {#if value}

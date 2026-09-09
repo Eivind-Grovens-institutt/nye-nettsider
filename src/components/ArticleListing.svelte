@@ -2,6 +2,7 @@
 	import imgUrlModule from '@sanity/image-url';
 	const imageUrlBuilder = imgUrlModule().dataset('production').projectId('3s7jtfk3');
 	import { resolve } from '$app/paths';
+	import EgiImage from './EgiImage.svelte';
 
 	export interface Article {
 		title: string;
@@ -16,13 +17,6 @@
 		category?: { title: string };
 		slug?: { current: string };
 		language?: string;
-	}
-
-	export interface EgiImage {
-		asset?: { url?: string };
-		alt?: string;
-		hotspot?: { x: number; y: number; width: number; height: number };
-		crop?: { top: number; bottom: number; left: number; right: number };
 	}
 
 	interface Props {
