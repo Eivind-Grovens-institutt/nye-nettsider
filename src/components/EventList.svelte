@@ -83,6 +83,12 @@
 		cursor: pointer;
 		display: block;
 	}
+
+	@media (max-width: 600px) {
+		.event {
+			margin-bottom: 1em;
+		}
+	}
 	.title {
 		font-weight: 600;
 	}
