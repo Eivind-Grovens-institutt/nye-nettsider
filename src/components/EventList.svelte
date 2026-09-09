@@ -37,14 +37,15 @@
 		<ol class="events-list">
 			{#each events as event (event._id)}
 				<li class="event">
-					<a class="events-row" tabindex="0" href={resolve(`/${language}/event/${event._id}`)}>
+					♫ <a class="events-row" tabindex="0" href={resolve(`/${language}/event/${event._id}`)}>
 						<span class="title-cell">
 							<span class="title">{event.title}</span>
 						</span>
-						<span class="date-cell">{formatDate(event.dates?.[0]?.starttime)}</span>
 					</a>
+					◆
+					<span class="date-cell">{formatDate(event.dates?.[0]?.starttime)}</span>
 					{#if event.ticketlink}
-						<a href={event.ticketlink}>Billetter</a>{/if}
+						◆ <a href={event.ticketlink}>billetter</a>{/if} ♫
 				</li>
 			{/each}
 		</ol>
