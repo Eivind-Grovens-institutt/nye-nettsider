@@ -348,7 +348,8 @@ const eventListingFields = `
   _id,
   title,
   dates,
-  illustration
+  illustration,
+  ticketlink
 `;
 
 const eventFields = `
