@@ -2,7 +2,8 @@ export const illustrationFields = `
   illustration{
     asset->{
       _id,
-      url
+      url,
+      metadata { dimensions, lqip }
     },
     hotspot,
     crop,
