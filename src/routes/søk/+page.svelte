@@ -27,7 +27,7 @@
 			title: q ? `Søk: ${q}` : 'Søk',
 			description: q
 				? `${results.length} treff for «${q}» på eivindgroven.org.`
-				: 'Søk i artiklar, opptak, video og notemateriale om Eivind Groven.',
+				: 'Søk i artikler, opptak, video og notemateriale om Eivind Groven.',
 			noindex: true
 		})
 	);
