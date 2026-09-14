@@ -49,9 +49,6 @@
 	);
 </script>
 
-<svelte:head>
-	<title>{article.title} - eivindgroven.org</title>
-</svelte:head>
 <article class="article">
 	<header>
 		<h1>{article.title}</h1>
@@ -61,9 +58,13 @@
 		{/if}
 
 		{#if article.illustration}
+			{@const dims = article.illustration.asset?.metadata?.dimensions}
 			<img
 				src={urlFor(article.illustration)}
 				alt={article.illustration.alt || article.title}
+				width={dims?.width}
+				height={dims?.height}
+				fetchpriority="high"
 				class="illustration"
 			/>
 		{/if}
