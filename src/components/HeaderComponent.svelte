@@ -61,7 +61,7 @@
 		background-position: center;
 		background-repeat: no-repeat;
 		width: 100%;
-		min-height: 100vh;
+		min-height: 70vh;
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between; /* Title at top, CTAs at bottom */
