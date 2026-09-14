@@ -445,7 +445,11 @@ export interface SitemapDocument {
 	slug?: string;
 }
 
-const sitemapDocumentsQuery = `*[_type in $types && defined(language)]{
+// Explicitly excludes drafts, even though the unauthenticated client used
+// here can't see them anyway - the client's dataset access can change (e.g.
+// a token added later for draft previews), and this query should never
+// start emitting "drafts.*" ids as public sitemap URLs if it does.
+const sitemapDocumentsQuery = `*[_type in $types && defined(language) && !(_id in path("drafts.**"))]{
   _type,
   _id,
   _updatedAt,
@@ -457,7 +461,7 @@ export const fetchSitemapDocuments = async (): Promise<SitemapDocument[]> => {
 	return await client.fetch(sitemapDocumentsQuery, { types: SITEMAP_TYPES });
 };
 
-const siteLanguagesQuery = `array::unique(*[_type == "settings" && defined(language)].language)`;
+const siteLanguagesQuery = `array::unique(*[_type == "settings" && defined(language) && !(_id in path("drafts.**"))].language)`;
 
 export const fetchSiteLanguages = async (): Promise<string[]> => {
 	return await client.fetch(siteLanguagesQuery);
