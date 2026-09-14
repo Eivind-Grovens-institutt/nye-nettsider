@@ -122,6 +122,7 @@ export type FrontPageBlock = EgiImageBlock | CtaArticleBlock | TextboxBlock | He
 
 export interface Settings {
 	title: string;
+	metaDescription?: string;
 	frontPageBlocks?: FrontPageBlock[];
 	footer: TextboxBlock;
 	language: string;
@@ -157,6 +158,7 @@ export interface Book {
 	year?: number;
 	url?: string;
 	assetUrl?: string;
+	metaDescription?: string;
 	tags?: string[];
 	language?: string;
 }
@@ -170,6 +172,7 @@ export interface Recording {
 	year?: number;
 	url?: string;
 	tracks?: Track[];
+	metaDescription?: string;
 	tags?: string[];
 	language?: string;
 }
@@ -183,6 +186,7 @@ export interface Sheetmusic {
 	year?: number;
 	url?: string;
 	noteUrl?: string;
+	metaDescription?: string;
 	tags?: string[];
 	language?: string;
 }
@@ -197,6 +201,7 @@ export interface Video {
 	year?: number;
 	url?: string;
 	videoUrl?: string;
+	metaDescription?: string;
 	tags?: string[];
 	language?: string;
 }
@@ -208,6 +213,7 @@ export interface Event {
 	illustration?: Illustration;
 	prose?: ProseBlock[];
 	ticketlink?: string;
+	metaDescription?: string;
 	tags?: string[];
 	language?: string;
 }

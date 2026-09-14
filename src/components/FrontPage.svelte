@@ -28,9 +28,6 @@
 	});
 </script>
 
-<svelte:head>
-	<title>eivindgroven.org</title>
-</svelte:head>
 <main class="frontpage">
 	<section class="blocks">
 		{#each blocks || [] as block}

@@ -81,6 +81,7 @@ export const fetchArticlesByCategory = async (
 
 const settingsQuery = `*[_type == "settings" && language == $language ][0]{
   title,
+  metaDescription,
   menu[] {
     _key,
     text,
@@ -171,6 +172,7 @@ const bookFields = `
       metadata { dimensions, lqip }
     }
   },
+  metaDescription,
   tags,
   language
 `;
@@ -222,6 +224,7 @@ const recordingFields = `
     title,
     "soundUrl": recording.asset->url
   },
+  metaDescription,
   tags,
   language
 `;
@@ -272,6 +275,7 @@ const sheetmusicFields = `
       metadata { dimensions, lqip }
     }
   },
+  metaDescription,
   tags,
   language
 `;
@@ -322,6 +326,7 @@ const videoFields = `
       metadata { dimensions, lqip }
     }
   },
+  metaDescription,
   tags,
   language
 `;
@@ -426,4 +431,38 @@ const soundByIdQuery = `*[_type == "sound" && _id == $id && language == $languag
 
 export const fetchSoundByLanguageAndId = async (language: string, id: string): Promise<Sound> => {
 	return await client.fetch(soundByIdQuery, { language, id });
+};
+
+// Sitemap
+
+const SITEMAP_TYPES = ['article', 'video', 'recording', 'sound', 'book', 'sheetmusic', 'event'];
+
+export interface SitemapDocument {
+	_type: (typeof SITEMAP_TYPES)[number];
+	_id: string;
+	_updatedAt: string;
+	language: string;
+	slug?: string;
+}
+
+// Explicitly excludes drafts, even though the unauthenticated client used
+// here can't see them anyway - the client's dataset access can change (e.g.
+// a token added later for draft previews), and this query should never
+// start emitting "drafts.*" ids as public sitemap URLs if it does.
+const sitemapDocumentsQuery = `*[_type in $types && defined(language) && !(_id in path("drafts.**"))]{
+  _type,
+  _id,
+  _updatedAt,
+  language,
+  "slug": slug.current
+}`;
+
+export const fetchSitemapDocuments = async (): Promise<SitemapDocument[]> => {
+	return await client.fetch(sitemapDocumentsQuery, { types: SITEMAP_TYPES });
+};
+
+const siteLanguagesQuery = `array::unique(*[_type == "settings" && defined(language) && !(_id in path("drafts.**"))].language)`;
+
+export const fetchSiteLanguages = async (): Promise<string[]> => {
+	return await client.fetch(siteLanguagesQuery);
 };
