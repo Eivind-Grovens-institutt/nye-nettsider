@@ -162,7 +162,11 @@
 						>
 							<td class="thumb-cell">
 								{#if item.image?.asset}
-									<img src={urlFor(item.image)} alt="" class="thumb" />
+									<img
+										src={urlFor(item.image)}
+										alt={item.image.asset.altText || ''}
+										class="thumb"
+									/>
 								{/if}
 							</td>
 							<td class="title-cell">

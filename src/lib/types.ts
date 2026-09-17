@@ -27,6 +27,9 @@ export interface SanityImageAsset {
 	_id: string;
 	url: string;
 	metadata?: SanityImageMetadata;
+	// Alt text authored on the asset in Sanity's media library, already
+	// resolved to the current page language (see assetAltTextField).
+	altText?: string;
 }
 
 export interface Illustration {

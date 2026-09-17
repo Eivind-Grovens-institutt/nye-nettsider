@@ -37,7 +37,11 @@
 	<h2>{event.title}</h2>
 
 	{#if event.illustration}
-		<img src={urlFor(event.illustration)} alt={event.title} class="illustration" />
+		<img
+			src={urlFor(event.illustration)}
+			alt={event.illustration.asset?.altText || event.title}
+			class="illustration"
+		/>
 	{/if}
 
 	{#if event.ticketlink}

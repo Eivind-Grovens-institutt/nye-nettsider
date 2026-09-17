@@ -1,6 +1,6 @@
 <script lang="ts">
 	export interface EgiImage {
-		asset?: { url?: string };
+		asset?: { url?: string; altText?: string };
 		alt?: string;
 		hotspot?: { x: number; y: number; width: number; height: number };
 		crop?: { top: number; bottom: number; left: number; right: number };
@@ -19,6 +19,7 @@
 			size?: string;
 			title: string;
 			photographer?: string;
+			asset?: { url?: string; altText?: string };
 		}>;
 	}
 	let { portableText }: Props = $props();
@@ -31,7 +32,7 @@
 </script>
 
 <figure class={value.size === 'half' ? 'egi-image half' : 'egi-image full'}>
-	<img src={urlFor(value)} alt={value.title || ''} />
+	<img src={urlFor(value)} alt={value.asset?.altText || value.title || ''} />
 	{#if value.title || value.photographer}
 		<figcaption>
 			{#if value.title}<div>{value.title}</div>{/if}

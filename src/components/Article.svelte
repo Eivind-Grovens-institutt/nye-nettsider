@@ -61,7 +61,7 @@
 			{@const dims = article.illustration.asset?.metadata?.dimensions}
 			<img
 				src={urlFor(article.illustration)}
-				alt={article.illustration.alt || article.title}
+				alt={article.illustration.asset?.altText || article.illustration.alt || article.title}
 				width={dims?.width}
 				height={dims?.height}
 				fetchpriority="high"

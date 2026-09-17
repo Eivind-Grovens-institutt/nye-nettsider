@@ -1,9 +1,16 @@
+// Resolves the media library's per-locale alt text (set in Sanity's asset
+// browser) to a single string for the current $language, falling back to the
+// Norwegian text since that's the primary language and least likely to be
+// missing.
+export const assetAltTextField = `"altText": coalesce(altText[$language], altText.no)`;
+
 export const illustrationFields = `
   illustration{
     asset->{
       _id,
       url,
-      metadata { dimensions, lqip }
+      metadata { dimensions, lqip },
+      ${assetAltTextField}
     },
     hotspot,
     crop,
@@ -30,7 +37,8 @@ export const proseFields = `
       asset->{
         _id,
         url,
-        metadata { dimensions, lqip }
+        metadata { dimensions, lqip },
+        ${assetAltTextField}
       }
     },
     _type == "recording" =>  @-> {
@@ -40,7 +48,8 @@ export const proseFields = `
       image {
         asset->{
           _id,
-          url
+          url,
+          ${assetAltTextField}
         }
       }
     },
@@ -56,7 +65,8 @@ export const proseFields = `
         asset->{
           _id,
           url,
-          metadata { dimensions, lqip }
+          metadata { dimensions, lqip },
+          ${assetAltTextField}
         }
       }
     },
@@ -80,7 +90,8 @@ export const proseFields = `
         asset->{
           _id,
           url,
-          metadata { dimensions, lqip }
+          metadata { dimensions, lqip },
+          ${assetAltTextField}
         }
       }
     },
@@ -98,7 +109,8 @@ export const proseFields = `
         asset->{
           _id,
           url,
-          metadata { dimensions, lqip }
+          metadata { dimensions, lqip },
+          ${assetAltTextField}
         }
       }
     },
@@ -109,6 +121,14 @@ export const proseFields = `
     },
     _type == "article-list" => {
         ...,
+        image{
+          ...,
+          asset->{
+            _id,
+            url,
+            ${assetAltTextField}
+          }
+        },
         articles[]->{
         title,
         lead,
@@ -132,7 +152,8 @@ export const ctaArticleFields = `      _type,
         asset->{
           _id,
           url,
-          metadata { dimensions, lqip }
+          metadata { dimensions, lqip },
+          ${assetAltTextField}
         }
       },
       article->{

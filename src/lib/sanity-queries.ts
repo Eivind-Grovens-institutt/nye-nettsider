@@ -1,5 +1,5 @@
 // queries.ts
-import { proseFields, illustrationFields, ctaArticleFields } from './fragments';
+import { proseFields, illustrationFields, ctaArticleFields, assetAltTextField } from './fragments';
 import type {
 	Article,
 	Book,
@@ -104,7 +104,8 @@ const settingsQuery = `*[_type == "settings" && language == $language ][0]{
       asset->{
         _id,
         url,
-        metadata { dimensions, lqip }
+        metadata { dimensions, lqip },
+        ${assetAltTextField}
       }
     },
     _type == "cta-article" => {
@@ -130,7 +131,8 @@ const settingsQuery = `*[_type == "settings" && language == $language ][0]{
             palette {
               muted{ background, title }
             }
-          }
+          },
+          ${assetAltTextField}
         }
       },
       ctas[]{ ${ctaArticleFields} }
@@ -169,7 +171,8 @@ const bookFields = `
     asset->{
       _id,
       url,
-      metadata { dimensions, lqip }
+      metadata { dimensions, lqip },
+      ${assetAltTextField}
     }
   },
   metaDescription,
@@ -214,7 +217,8 @@ const recordingFields = `
     asset->{
       _id,
       url,
-      metadata { dimensions, lqip }
+      metadata { dimensions, lqip },
+      ${assetAltTextField}
     }
   },
   year,
@@ -272,7 +276,8 @@ const sheetmusicFields = `
     asset->{
       _id,
       url,
-      metadata { dimensions, lqip }
+      metadata { dimensions, lqip },
+      ${assetAltTextField}
     }
   },
   metaDescription,
@@ -323,7 +328,8 @@ const videoFields = `
     asset->{
       _id,
       url,
-      metadata { dimensions, lqip }
+      metadata { dimensions, lqip },
+      ${assetAltTextField}
     }
   },
   metaDescription,
@@ -353,7 +359,7 @@ const eventListingFields = `
   _id,
   title,
   dates,
-  illustration,
+  ${illustrationFields},
   ticketlink
 `;
 
@@ -361,7 +367,7 @@ const eventFields = `
   _id,
   title,
   dates,
-  illustration,
+  ${illustrationFields},
   prose,
   tags,
   ticketlink
@@ -391,7 +397,14 @@ const contentListItemFields = `
   _id,
   _type,
   title,
-  image,
+  image{
+    ...,
+    asset->{
+      _id,
+      url,
+      ${assetAltTextField}
+    }
+  },
   year,
   language,
   authors,

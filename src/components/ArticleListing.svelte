@@ -2,13 +2,13 @@
 	import imgUrlModule from '@sanity/image-url';
 	const imageUrlBuilder = imgUrlModule().dataset('production').projectId('3s7jtfk3');
 	import { resolve } from '$app/paths';
-	import EgiImage from './EgiImage.svelte';
+	import type { EgiImage } from './EgiImage.svelte';
 
 	export interface Article {
 		title: string;
 		lead?: string;
 		illustration?: {
-			asset?: { _id: string; url: string };
+			asset?: { _id: string; url: string; altText?: string };
 			hotspot?: { x: number; y: number; width: number; height: number };
 			crop?: { top: number; bottom: number; left: number; right: number };
 			alt?: string;
@@ -49,7 +49,10 @@
 <div class="article-listing-block" class:has-image={hasImage}>
 	{#if image?.asset}
 		<div class="side-image side-image--{imageAlign}">
-			<img src={imageUrlBuilder.image(image).toString()} alt={image.alt || ''} />
+			<img
+				src={imageUrlBuilder.image(image).toString()}
+				alt={image.asset?.altText || image.alt || ''}
+			/>
 		</div>
 	{/if}
 
@@ -74,7 +77,7 @@
 								.image(article.illustration)
 								.toString()}');"
 							role="img"
-							aria-label={article.title}
+							aria-label={article.illustration?.asset?.altText || article.title}
 						></div>
 					{/if}
 
