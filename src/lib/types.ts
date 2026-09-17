@@ -221,7 +221,14 @@ export interface Event {
 	language?: string;
 }
 
-export type ContentListType = 'video' | 'recording' | 'sound' | 'book' | 'sheetmusic';
+// Types the "content-list" block's own multi-select can be configured with.
+// 'newsPost' is handled separately (see fetchNewsPostsByTag) since news items
+// are dated/capped/linked differently from the other, "fetch everything
+// tagged" content types - GenericContentListType below is what actually goes
+// through fetchContentListItems.
+export type ContentListType = 'video' | 'recording' | 'sound' | 'book' | 'sheetmusic' | 'newsPost';
+
+export type GenericContentListType = Exclude<ContentListType, 'newsPost'>;
 
 export interface ContentListBlock {
 	_type: 'content-list';
@@ -232,7 +239,7 @@ export interface ContentListBlock {
 
 export interface ContentListItem {
 	_id: string;
-	_type: ContentListType;
+	_type: GenericContentListType;
 	title: string;
 	image?: SanityImage;
 	year?: number;
@@ -261,5 +268,6 @@ export interface NewsPost {
 	text?: ProseBlock[];
 	slug?: Slug;
 	date?: string;
+	tags?: string[];
 	language?: string;
 }

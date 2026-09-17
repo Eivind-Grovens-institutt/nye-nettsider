@@ -7,7 +7,7 @@ import type {
 	Sheetmusic,
 	Video,
 	Event,
-	ContentListType,
+	GenericContentListType,
 	ContentListItem,
 	Sound,
 	NewsPost
@@ -420,7 +420,7 @@ const contentListItemsQuery = `*[_type in $types && language == $language && $ta
 
 export const fetchContentListItems = async (
 	language: string,
-	types: ContentListType[],
+	types: GenericContentListType[],
 	tag: string
 ): Promise<ContentListItem[]> => {
 	return await client.fetch(contentListItemsQuery, { language, types, tag });
@@ -477,6 +477,7 @@ const newsPostFields = `
   },
   slug,
   date,
+  tags,
   language
 `;
 
@@ -525,6 +526,25 @@ export const fetchNewsPostsPage = async (
     "total": count(*[_type == "newsPost" && language == $language])
   }`;
 	return await client.fetch(query, { language });
+};
+
+// Used by the "Nyheter" section of a content-list block: the most recent
+// news posts sharing that block's tag, capped so the block stays scannable -
+// `total` tells the caller whether to point readers at the full paginated
+// list instead.
+export const fetchNewsPostsByTag = async (
+	language: string,
+	tag: string,
+	limit = NEWS_POSTS_PAGE_SIZE
+): Promise<NewsPostsPage> => {
+	// See fetchLatestNewsPosts for why `limit` can be interpolated directly.
+	const query = `{
+    "posts": *[_type == "newsPost" && language == $language && $tag in tags] | order(date desc)[0...${limit}]{
+      ${newsPostListingFields}
+    },
+    "total": count(*[_type == "newsPost" && language == $language && $tag in tags])
+  }`;
+	return await client.fetch(query, { language, tag });
 };
 
 // Sitemap
