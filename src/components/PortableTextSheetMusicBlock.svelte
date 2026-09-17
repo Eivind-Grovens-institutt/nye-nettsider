@@ -4,7 +4,7 @@
 	import type { Sheetmusic } from '../lib/types';
 
 	interface Props {
-		portableText: CustomBlockComponentProps<{ value?: Sheetmusic }>;
+		portableText: CustomBlockComponentProps<Sheetmusic>;
 	}
 
 	const { portableText }: Props = $props();

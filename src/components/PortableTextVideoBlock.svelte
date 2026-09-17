@@ -5,7 +5,7 @@
 	import type { Video } from '../lib/types';
 
 	interface Props {
-		portableText: CustomBlockComponentProps<{ value?: Video }>;
+		portableText: CustomBlockComponentProps<Video>;
 	}
 
 	const { portableText }: Props = $props();

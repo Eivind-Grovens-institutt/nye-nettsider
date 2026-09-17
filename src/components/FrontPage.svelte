@@ -72,9 +72,11 @@
 					</li>
 				{/each}
 			</ul>
-			<a class="all-news" href={resolve(`/${settings?.language || 'no'}/nyheter`)}
-				>Alle nyheter →</a
-			>
+			{#if newsPosts.length >= 3}
+				<a class="all-news" href={resolve(`/${settings?.language || 'no'}/nyheter`)}
+					>Alle nyheter →</a
+				>
+			{/if}
 		</section>
 	{/if}
 </main>

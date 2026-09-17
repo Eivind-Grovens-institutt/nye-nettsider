@@ -1,19 +1,12 @@
 <script lang="ts">
 	import {
-		fetchContentListItems,
 		fetchVideoByLanguageAndId,
 		fetchRecordingByLanguageAndId,
 		fetchSoundByLanguageAndId,
 		fetchBookByLanguageAndId,
-		fetchSheetmusicByLanguageAndId,
-		fetchNewsPostsByTag
+		fetchSheetmusicByLanguageAndId
 	} from '../lib/sanity-queries';
-	import type {
-		ContentListBlock,
-		ContentListItem,
-		GenericContentListType,
-		NewsPost
-	} from '../lib/types';
+	import type { ContentListBlock, ContentListItem, GenericContentListType } from '../lib/types';
 	import imageUrlBuilder from '@sanity/image-url';
 	import { client } from '../lib/sanity-client';
 	import { resolve } from '$app/paths';
@@ -25,8 +18,12 @@
 	import SheetMusicBlock from './SheetMusicBlock.svelte';
 	import type { CustomBlockComponentProps } from '@portabletext/svelte';
 
+	// `value.items`/`value.newsPosts`/`value.newsTotal` are resolved
+	// server-side (see the content-list clause in lib/fragments.ts#proseFields)
+	// so this section is part of the initial server-rendered HTML rather than
+	// fetched client-side after the page loads.
 	interface Props {
-		portableText: CustomBlockComponentProps<{ value?: ContentListBlock }>;
+		portableText: CustomBlockComponentProps<ContentListBlock>;
 	}
 
 	const { portableText }: Props = $props();
@@ -80,9 +77,11 @@
 		}
 	};
 
-	let items = $state<ContentListItem[]>([]);
-	let loading = $state(true);
-	let error = $state<string | null>(null);
+	const NEWS_SECTION_LIMIT = 10;
+
+	let items = $derived(value?.items ?? []);
+	let newsPosts = $derived(value?.newsPosts ?? []);
+	let newsTotal = $derived(value?.newsTotal ?? 0);
 
 	let grouped = $derived.by(() => {
 		const groups: Partial<Record<GenericContentListType, ContentListItem[]>> = {};
@@ -94,34 +93,6 @@
 			.map((type) => ({ type, groupItems: groups[type]! }));
 	});
 
-	$effect(() => {
-		const language = context?.language ?? 'no';
-		// 'newsPost' is fetched separately below - it doesn't fit the
-		// "one row per item, opens a modal" shape the other types share.
-		const types = (value?.contentType ?? []).filter(
-			(t: string): t is GenericContentListType => t !== 'newsPost'
-		);
-		const tag = value?.tag;
-
-		if (!types.length || !tag) {
-			loading = false;
-			return;
-		}
-
-		loading = true;
-		error = null;
-		fetchContentListItems(language, types, tag)
-			.then((result) => (items = result))
-			.catch((e) => (error = e instanceof Error ? e.message : String(e)))
-			.finally(() => (loading = false));
-	});
-
-	const NEWS_SECTION_LIMIT = 10;
-
-	let newsPosts = $state<NewsPost[]>([]);
-	let newsTotal = $state(0);
-	let newsLoading = $state(true);
-
 	const formatDate = (date?: string) => {
 		if (!date) return '';
 		return new Date(date).toLocaleDateString('no-NO', {
@@ -130,32 +101,6 @@
 			day: 'numeric'
 		});
 	};
-
-	$effect(() => {
-		const language = context?.language ?? 'no';
-		const tag = value?.tag;
-		const includeNews = value?.contentType?.includes('newsPost');
-
-		if (!includeNews || !tag) {
-			newsLoading = false;
-			newsPosts = [];
-			newsTotal = 0;
-			return;
-		}
-
-		newsLoading = true;
-		fetchNewsPostsByTag(language, tag, NEWS_SECTION_LIMIT)
-			.then((result) => {
-				newsPosts = result.posts;
-				newsTotal = result.total;
-			})
-			.catch((e) => {
-				console.error(e);
-				newsPosts = [];
-				newsTotal = 0;
-			})
-			.finally(() => (newsLoading = false));
-	});
 
 	let modalOpen = $state(false);
 	let modalType = $state<GenericContentListType | null>(null);
@@ -197,11 +142,7 @@
 	};
 </script>
 
-{#if loading}
-	<p class="content-list-status">Laster innhold …</p>
-{:else if error}
-	<p class="content-list-status error">Feil ved lasting av innhold: {error}</p>
-{:else if items.length}
+{#if items.length}
 	{#each grouped as { type, groupItems } (type)}
 		<section class="content-group">
 			<h3 class="content-group-title">{typeLabels[type]}</h3>
@@ -239,7 +180,7 @@
 	{/each}
 {/if}
 
-{#if !newsLoading && newsPosts.length}
+{#if newsPosts.length}
 	<section class="content-group">
 		<h3 class="content-group-title">Nyheter</h3>
 		<ul class="news-items">

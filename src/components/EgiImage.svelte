@@ -23,7 +23,7 @@
 		}>;
 	}
 	let { portableText }: Props = $props();
-	const value = portableText.value;
+	const value = $derived(portableText.value);
 	console.log(portableText);
 
 	import { client } from '../lib/sanity-client';

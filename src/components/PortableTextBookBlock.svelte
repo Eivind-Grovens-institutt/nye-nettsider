@@ -4,7 +4,7 @@
 	import type { Book } from '../lib/types';
 
 	interface Props {
-		portableText: CustomBlockComponentProps<{ value?: Book }>;
+		portableText: CustomBlockComponentProps<Book>;
 	}
 
 	const { portableText }: Props = $props();

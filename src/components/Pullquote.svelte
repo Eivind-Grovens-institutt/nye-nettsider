@@ -3,7 +3,7 @@
 	import type { CustomBlockComponentProps } from '@portabletext/svelte';
 
 	interface Props {
-		portableText: CustomBlockComponentProps<{ value?: PullquoteBlock }>;
+		portableText: CustomBlockComponentProps<PullquoteBlock>;
 	}
 	const { portableText }: Props = $props();
 	const value = $derived(portableText.value);

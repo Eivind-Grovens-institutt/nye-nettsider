@@ -1,17 +1,6 @@
 // queries.ts
 import { proseFields, illustrationFields, ctaArticleFields, assetAltTextField } from './fragments';
-import type {
-	Article,
-	Book,
-	Recording,
-	Sheetmusic,
-	Video,
-	Event,
-	GenericContentListType,
-	ContentListItem,
-	Sound,
-	NewsPost
-} from './types';
+import type { Article, Book, Recording, Sheetmusic, Video, Event, Sound, NewsPost } from './types';
 import { client } from './sanity-client';
 
 // Single article by slug
@@ -392,39 +381,10 @@ export const fetchEventByLanguageAndId = async (language: string, id: string): P
 	return await client.fetch(eventByIdQuery, { language, id });
 };
 
-// Content lists (content-list blocks embedded in article prose)
-
-const contentListItemFields = `
-  _id,
-  _type,
-  title,
-  image{
-    ...,
-    asset->{
-      _id,
-      url,
-      ${assetAltTextField}
-    }
-  },
-  year,
-  language,
-  authors,
-  musicians,
-  instruments,
-  editors
-`;
-
-const contentListItemsQuery = `*[_type in $types && language == $language && $tag in tags] | order(year asc){
-  ${contentListItemFields}
-}`;
-
-export const fetchContentListItems = async (
-	language: string,
-	types: GenericContentListType[],
-	tag: string
-): Promise<ContentListItem[]> => {
-	return await client.fetch(contentListItemsQuery, { language, types, tag });
-};
+// Content lists (content-list blocks embedded in article prose) are resolved
+// server-side as part of proseFields (see fragments.ts) - the block itself
+// already carries its "items"/"newsPosts"/"newsTotal" by the time it reaches
+// the frontend, no separate fetch needed.
 
 // Sound (individual audio tracks, referenced by recording.tracks and content-list)
 
@@ -526,25 +486,6 @@ export const fetchNewsPostsPage = async (
     "total": count(*[_type == "newsPost" && language == $language])
   }`;
 	return await client.fetch(query, { language });
-};
-
-// Used by the "Nyheter" section of a content-list block: the most recent
-// news posts sharing that block's tag, capped so the block stays scannable -
-// `total` tells the caller whether to point readers at the full paginated
-// list instead.
-export const fetchNewsPostsByTag = async (
-	language: string,
-	tag: string,
-	limit = NEWS_POSTS_PAGE_SIZE
-): Promise<NewsPostsPage> => {
-	// See fetchLatestNewsPosts for why `limit` can be interpolated directly.
-	const query = `{
-    "posts": *[_type == "newsPost" && language == $language && $tag in tags] | order(date desc)[0...${limit}]{
-      ${newsPostListingFields}
-    },
-    "total": count(*[_type == "newsPost" && language == $language && $tag in tags])
-  }`;
-	return await client.fetch(query, { language, tag });
 };
 
 // Sitemap

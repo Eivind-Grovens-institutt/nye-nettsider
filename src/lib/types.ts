@@ -222,20 +222,13 @@ export interface Event {
 }
 
 // Types the "content-list" block's own multi-select can be configured with.
-// 'newsPost' is handled separately (see fetchNewsPostsByTag) since news items
-// are dated/capped/linked differently from the other, "fetch everything
-// tagged" content types - GenericContentListType below is what actually goes
-// through fetchContentListItems.
+// 'newsPost' is resolved separately by the content-list GROQ clause (see
+// fragments.ts) since news items are dated/capped/linked differently from
+// the other, "fetch everything tagged" content types -
+// GenericContentListType below is what `items` actually contains.
 export type ContentListType = 'video' | 'recording' | 'sound' | 'book' | 'sheetmusic' | 'newsPost';
 
 export type GenericContentListType = Exclude<ContentListType, 'newsPost'>;
-
-export interface ContentListBlock {
-	_type: 'content-list';
-	_key?: string;
-	contentType?: ContentListType[];
-	tag?: string;
-}
 
 export interface ContentListItem {
 	_id: string;
@@ -248,6 +241,19 @@ export interface ContentListItem {
 	musicians?: string[];
 	instruments?: string[];
 	editors?: string[];
+}
+
+export interface ContentListBlock {
+	_type: 'content-list';
+	_key?: string;
+	contentType?: ContentListType[];
+	tag?: string;
+	// Resolved server-side (see the content-list clause in
+	// lib/fragments.ts#proseFields) so the listing is part of the initial
+	// server-rendered HTML rather than fetched client-side after the fact.
+	items?: ContentListItem[];
+	newsPosts?: NewsPost[];
+	newsTotal?: number;
 }
 
 export interface Sound {

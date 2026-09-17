@@ -4,7 +4,7 @@
 	import type { Recording } from '../lib/types';
 
 	interface Props {
-		portableText: CustomBlockComponentProps<{ value?: Recording }>;
+		portableText: CustomBlockComponentProps<Recording>;
 	}
 
 	const { portableText }: Props = $props();

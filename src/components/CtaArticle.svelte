@@ -13,8 +13,7 @@
 			link?: string;
 		};
 	} = $props();
-	const value = props.value;
-	console.log(value);
+	const value = $derived(props.value);
 </script>
 
 <article class="cta" style="--bg: {props.bgColor}; --color: {props.textColor}">

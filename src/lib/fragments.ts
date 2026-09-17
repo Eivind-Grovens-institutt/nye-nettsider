@@ -137,6 +137,55 @@ export const proseFields = `
         slug,
         language
       }
+    },
+    // "Utlisting av innhold" - resolved server-side (rather than fetched
+    // client-side by ContentList.svelte) so the listing is part of the
+    // rendered HTML instead of only appearing after JS runs. News posts are
+    // matched separately from the other content types since they're newest-
+    // first/capped/linked to their own page rather than opened in a modal.
+    _type == "content-list" => {
+      ...,
+      "items": *[
+        _type in ^.contentType &&
+        _type != "newsPost" &&
+        language == $language &&
+        ^.tag in tags
+      ] | order(year asc){
+        _id,
+        _type,
+        title,
+        image{
+          ...,
+          asset->{
+            _id,
+            url,
+            ${assetAltTextField}
+          }
+        },
+        year,
+        language,
+        authors,
+        musicians,
+        instruments,
+        editors
+      },
+      "newsPosts": *[
+        _type == "newsPost" &&
+        language == $language &&
+        ^.tag in tags
+      ] | order(date desc)[0...10]{
+        _id,
+        title,
+        lead,
+        slug,
+        date,
+        language
+      },
+      "newsTotal": count(*[
+        _type == "newsPost" &&
+        language == $language &&
+        ^.tag in tags
+      ])
     }
   }
 `;
