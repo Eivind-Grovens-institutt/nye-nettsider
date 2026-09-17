@@ -9,7 +9,8 @@ import type {
 	Event,
 	ContentListType,
 	ContentListItem,
-	Sound
+	Sound,
+	NewsPost
 } from './types';
 import { client } from './sanity-client';
 
@@ -446,9 +447,98 @@ export const fetchSoundByLanguageAndId = async (language: string, id: string): P
 	return await client.fetch(soundByIdQuery, { language, id });
 };
 
+// News posts
+
+const newsPostListingFields = `
+  _id,
+  title,
+  lead,
+  slug,
+  date,
+  language
+`;
+
+const newsPostFields = `
+  _id,
+  _type,
+  title,
+  lead,
+  text[]{
+    ...,
+    _type == "egi-image" => {
+      ...,
+      asset->{
+        _id,
+        url,
+        metadata { dimensions, lqip },
+        ${assetAltTextField}
+      }
+    }
+  },
+  slug,
+  date,
+  language
+`;
+
+const singleNewsPostQuery = `*[_type == "newsPost" && slug.current == $slug && language == $language][0]{
+  ${newsPostFields}
+}`;
+
+export const fetchNewsPostByLanguageAndSlug = async (
+	language: string,
+	slug: string
+): Promise<NewsPost> => {
+	return await client.fetch(singleNewsPostQuery, { language, slug });
+};
+
+export const fetchLatestNewsPosts = async (language: string, limit = 3): Promise<NewsPost[]> => {
+	// `limit` is always an internal constant (never user input), so it's safe
+	// to interpolate directly into the slice - GROQ slice bounds must be
+	// literals, they can't be passed as query params.
+	const query = `*[_type == "newsPost" && language == $language] | order(date desc)[0...${limit}]{
+    ${newsPostListingFields}
+  }`;
+	return await client.fetch(query, { language });
+};
+
+export const NEWS_POSTS_PAGE_SIZE = 10;
+
+export interface NewsPostsPage {
+	posts: NewsPost[];
+	total: number;
+}
+
+export const fetchNewsPostsPage = async (
+	language: string,
+	page: number
+): Promise<NewsPostsPage> => {
+	const pageSize = NEWS_POSTS_PAGE_SIZE;
+	const safePage = Number.isFinite(page) && page > 0 ? Math.floor(page) : 1;
+	const start = (safePage - 1) * pageSize;
+	const end = start + pageSize;
+	// Slice bounds must be literals (see fetchLatestNewsPosts), but they're
+	// derived from a sanitized integer above, never the raw query param.
+	const query = `{
+    "posts": *[_type == "newsPost" && language == $language] | order(date desc)[${start}...${end}]{
+      ${newsPostListingFields}
+    },
+    "total": count(*[_type == "newsPost" && language == $language])
+  }`;
+	return await client.fetch(query, { language });
+};
+
 // Sitemap
 
-const SITEMAP_TYPES = ['article', 'video', 'recording', 'sound', 'book', 'sheetmusic', 'event'];
+const SITEMAP_TYPES = [
+	'article',
+	'video',
+	'recording',
+	'sound',
+	'book',
+	'sheetmusic',
+	'event',
+	'newsPost'
+];
 
 export interface SitemapDocument {
 	_type: (typeof SITEMAP_TYPES)[number];

@@ -4,10 +4,14 @@ import {
 	fetchArticleByLanguageAndSlug,
 	fetchBookByLanguageAndId,
 	fetchEventByLanguageAndId,
+	fetchLatestNewsPosts,
+	fetchNewsPostByLanguageAndSlug,
+	fetchNewsPostsPage,
 	fetchRecordingByLanguageAndId,
 	fetchSheetmusicByLanguageAndId,
 	fetchSoundByLanguageAndId,
-	fetchVideoByLanguageAndId
+	fetchVideoByLanguageAndId,
+	NEWS_POSTS_PAGE_SIZE
 } from '$lib/sanity-queries';
 import { languageFromPath } from '$lib/language';
 
@@ -20,7 +24,8 @@ export const load: PageServerLoad = async ({ params, url }) => {
 	const language = languageFromPath(url.pathname);
 
 	if (pathParts.length <= 1) {
-		return { kind: 'front' as const, language };
+		const newsPosts = await fetchLatestNewsPosts(language, 3);
+		return { kind: 'front' as const, language, newsPosts };
 	}
 
 	const pageCategory = pathParts[1];
@@ -62,6 +67,24 @@ export const load: PageServerLoad = async ({ params, url }) => {
 			const event = await fetchEventByLanguageAndId(language, slug);
 			if (!event) error(404, 'Fant ikke arrangementet');
 			return { kind: 'event' as const, event, language };
+		}
+		case 'nyhet': {
+			const newsPost = await fetchNewsPostByLanguageAndSlug(language, slug);
+			if (!newsPost) error(404, 'Fant ikke nyheten');
+			return { kind: 'newsPost' as const, newsPost, language };
+		}
+		case 'nyheter': {
+			const requestedPage = Number(url.searchParams.get('side'));
+			const newsPostsPage = Number.isFinite(requestedPage) && requestedPage > 0 ? requestedPage : 1;
+			const { posts, total } = await fetchNewsPostsPage(language, newsPostsPage);
+			return {
+				kind: 'newsList' as const,
+				newsPosts: posts,
+				newsPostsTotal: total,
+				newsPostsPage,
+				newsPostsPageSize: NEWS_POSTS_PAGE_SIZE,
+				language
+			};
 		}
 		default:
 			error(404, 'Fant ikke siden');

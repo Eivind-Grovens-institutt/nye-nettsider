@@ -8,6 +8,7 @@ import {
 
 function pathFor(doc: SitemapDocument): string {
 	if (doc._type === 'article') return `/${doc.language}/artikkel/${doc.slug}`;
+	if (doc._type === 'newsPost') return `/${doc.language}/nyhet/${doc.slug}`;
 	return `/${doc.language}/${doc._type}/${doc._id}`;
 }
 
@@ -25,7 +26,7 @@ export const GET: RequestHandler = async () => {
 		entries.push({ loc: `/${language}` });
 	}
 	for (const doc of docs) {
-		if (doc._type === 'article' && !doc.slug) continue;
+		if ((doc._type === 'article' || doc._type === 'newsPost') && !doc.slug) continue;
 		entries.push({ loc: pathFor(doc), lastmod: doc._updatedAt });
 	}
 

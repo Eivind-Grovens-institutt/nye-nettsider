@@ -19,7 +19,9 @@
 			sound: data.sound,
 			book: data.book,
 			sheetmusic: data.sheetmusic,
-			event: data.event
+			event: data.event,
+			newsPost: data.newsPost,
+			newsPostsPage: data.newsPostsPage
 		})
 	);
 </script>
@@ -36,4 +38,10 @@
 	book={data.book}
 	sheetmusic={data.sheetmusic}
 	event={data.event}
+	newsPost={data.newsPost}
+	newsPosts={data.newsPosts}
+	newsPostsTotal={data.newsPostsTotal}
+	newsPostsPage={data.newsPostsPage}
+	newsPostsPageSize={data.newsPostsPageSize}
+	language={data.language}
 />

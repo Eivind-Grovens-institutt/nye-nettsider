@@ -8,6 +8,7 @@ import type {
 	Article,
 	Book,
 	Event,
+	NewsPost,
 	ProseBlock,
 	Recording,
 	Settings,
@@ -148,6 +149,19 @@ export function articleJsonLd(article: Article, meta: PageMeta) {
 	};
 }
 
+export function newsPostJsonLd(newsPost: NewsPost, meta: PageMeta) {
+	return {
+		'@context': 'https://schema.org',
+		'@type': 'NewsArticle',
+		headline: newsPost.title,
+		description: meta.description,
+		...(meta.image ? { image: [meta.image] } : {}),
+		...(newsPost.date ? { datePublished: newsPost.date } : {}),
+		mainEntityOfPage: meta.canonical,
+		publisher: { '@type': 'Organization', name: SITE_NAME, url: SITE_URL }
+	};
+}
+
 export function eventJsonLd(event: Event, meta: PageMeta) {
 	const first = event.dates?.[0];
 	return {
@@ -231,7 +245,9 @@ export type ContentKind =
 	| 'sound'
 	| 'book'
 	| 'sheetmusic'
-	| 'event';
+	| 'event'
+	| 'newsPost'
+	| 'newsList';
 
 export interface ContentMetaInput {
 	kind: ContentKind;
@@ -245,6 +261,8 @@ export interface ContentMetaInput {
 	book?: Book;
 	sheetmusic?: Sheetmusic;
 	event?: Event;
+	newsPost?: NewsPost;
+	newsPostsPage?: number;
 }
 
 // Builds the page <head> meta and any structured data for a single route,
@@ -266,6 +284,34 @@ export function buildContentMeta(input: ContentMetaInput): { meta: PageMeta; jso
 				publishedTime: a.date
 			});
 			return { meta, jsonLd: [articleJsonLd(a, meta)] };
+		}
+		case 'newsPost': {
+			const n = input.newsPost!;
+			const meta = buildMeta({
+				path,
+				language,
+				title: n.title,
+				description: n.lead || firstPortableTextSnippet(n.text),
+				image: frontPageImage(settings),
+				type: 'article',
+				publishedTime: n.date
+			});
+			return { meta, jsonLd: [newsPostJsonLd(n, meta)] };
+		}
+		case 'newsList': {
+			const page = input.newsPostsPage ?? 1;
+			const meta = buildMeta({
+				path,
+				language,
+				title: page > 1 ? `Nyheter – side ${page}` : 'Nyheter',
+				description: 'Nyheter om Eivind Groven og reinstemmingsorgelet.',
+				image: frontPageImage(settings),
+				// Pagination pages beyond the first are thin/duplicate listings,
+				// same reasoning as the søk page - keep them out of the index but
+				// still crawlable.
+				noindex: page > 1
+			});
+			return { meta, jsonLd: [] };
 		}
 		case 'event': {
 			const e = input.event!;

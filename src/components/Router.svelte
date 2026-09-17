@@ -13,9 +13,13 @@ the server-rendered HTML.
 	import SoundPlayerBlock from './SoundPlayerBlock.svelte';
 	import BookBlock from './BookBlock.svelte';
 	import SheetMusicBlock from './SheetMusicBlock.svelte';
+	import NewsPostBlock from './NewsPost.svelte';
+	import NewsList from './NewsList.svelte';
+	import { NEWS_POSTS_PAGE_SIZE } from '$lib/sanity-queries';
 	import type {
 		Book,
 		Event,
+		NewsPost,
 		Recording,
 		Settings,
 		Sheetmusic,
@@ -35,14 +39,35 @@ the server-rendered HTML.
 		book?: Book;
 		sheetmusic?: Sheetmusic;
 		event?: Event;
+		newsPost?: NewsPost;
+		newsPosts?: NewsPost[];
+		newsPostsTotal?: number;
+		newsPostsPage?: number;
+		newsPostsPageSize?: number;
+		language?: string;
 	}
 
-	const { kind, settings, article, video, recording, sound, book, sheetmusic, event }: Props =
-		$props();
+	const {
+		kind,
+		settings,
+		article,
+		video,
+		recording,
+		sound,
+		book,
+		sheetmusic,
+		event,
+		newsPost,
+		newsPosts,
+		newsPostsTotal,
+		newsPostsPage,
+		newsPostsPageSize,
+		language
+	}: Props = $props();
 </script>
 
 {#if kind === 'front' && settings}
-	<FrontPage {settings} />
+	<FrontPage {settings} {newsPosts} />
 {:else if kind === 'article' && article}
 	<Article {article} />
 {:else if kind === 'video' && video}
@@ -57,6 +82,16 @@ the server-rendered HTML.
 	<section class="content"><SheetMusicBlock {sheetmusic} /></section>
 {:else if kind === 'event' && event}
 	<section class="content"><EventBlock {event} /></section>
+{:else if kind === 'newsPost' && newsPost}
+	<section class="content"><NewsPostBlock {newsPost} /></section>
+{:else if kind === 'newsList'}
+	<NewsList
+		posts={newsPosts ?? []}
+		total={newsPostsTotal ?? 0}
+		page={newsPostsPage ?? 1}
+		pageSize={newsPostsPageSize ?? NEWS_POSTS_PAGE_SIZE}
+		language={language ?? 'no'}
+	/>
 {/if}
 
 <style>

@@ -253,3 +253,13 @@ export interface Sound {
 	tags?: string[];
 	language?: string;
 }
+
+export interface NewsPost {
+	_id?: string;
+	title: string;
+	lead?: string;
+	text?: ProseBlock[];
+	slug?: Slug;
+	date?: string;
+	language?: string;
+}
