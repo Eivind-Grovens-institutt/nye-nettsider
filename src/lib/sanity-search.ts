@@ -13,21 +13,28 @@ export interface SearchResult {
 
 const searchQuery = groq`
 	*[
-		_type in ["article", "book", "event", "recording", "sheetmusic", "sound", "video"] &&
+		_type in ["article", "book", "event", "newsPost", "recording", "sheetmusic", "sound", "video"] &&
 		(
 			title match $term ||
+			lead match $term ||
 			pt::text(prose) match $term ||
 			pt::text(text) match $term
 		)
 	] | score(
 		boost(title match $term, 3),
-		boost(pt::text(prose) match $term, 1)
+		boost(lead match $term, 2),
+		boost(pt::text(prose) match $term, 1),
+		boost(pt::text(text) match $term, 1)
 	) | order(_score desc) [0...20] {
 		_id,
 		_type,
 		title,
 		"slug": slug.current,
-		"excerpt": pt::text(body)[0...160],
+		"excerpt": select(
+			defined(lead) => lead,
+			defined(prose) => pt::text(prose)[0...160],
+			pt::text(text)[0...160]
+		),
 		"score": _score,
 		language
 	}

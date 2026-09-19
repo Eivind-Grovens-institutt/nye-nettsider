@@ -3,6 +3,8 @@
 		switch (type) {
 			case 'article':
 				return `/${language}/artikkel/${slug}`;
+			case 'newsPost':
+				return `/${language}/nyhet/${slug}`;
 			default:
 				return `/${language}/${type}/${id}`;
 		}
